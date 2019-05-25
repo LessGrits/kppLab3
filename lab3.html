@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Simple Map</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <style>
+
+      #map {
+        height: 100%;
+      }
+
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+    <body>
+    <div id="map"></div>
+    <p>Click on the map to add markers.</p>
+    </body>
+</html>
+
+    <script>
+
+      // This example displays a marker at the center of Australia.
+      // When the user clicks the marker, an info window opens.
+
+      function initMap() {
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 10,
+          center: {lat: -33.9, lng: 151.2}
+        });
+        setMarkers(map);
+      }
+
+      var beaches = [
+        ['beach1', -33.890542, 151.274856],
+        ['beach2', -33.923036, 151.259052],
+        ['beach3', -34.028249, 151.157507],
+        ['beach4', -33.80010128657071, 151.28747820854187],
+        ['beach5', -33.950198, 151.259302]
+      ];
+
+      async function  setMarkers(map) {
+        // var beach = beaches[0];
+        //  temper(`lat=${beach[1]}&lon=${beach[2]}&`)
+        for (var i = 0; i < beaches.length; i++) {
+          var beach = beaches[i];
+           beach[0] = new google.maps.Marker({
+            position: {lat: beach[1], lng: beach[2]},
+            map: map,
+            title:  await temper(`lat=${beach[1]}&lon=${beach[2]}&`)
+          });
+        }
+      }
+
+      function temper(coord){
+        return fetch(`https://api.openweathermap.org/data/2.5/weather?${coord}appid=1b5ee5a1a74d624a74750350327ea372`)
+          .then(response => response.json())
+          .then(data=>`temp: ${(data.main.temp - 273.15).toFixed()} °`);
+
+      }
+/*temper(`lat=${beaches[1][1]}&lon=${beaches[1][2]}&`);*/
+
+
+</script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBTjJ9ulK1L7xAS69AJI0YoiVdSpbNU9r8&callback=initMap"
+    async defer></script>
+  </body>
+</html>
+
+
+
+   <!-- fetch('https://api.openweathermap.org/data/2.5/weather?lat=49.23&lon=28.48&appid=1b5ee5a1a74d624a74750350327ea372')
+    .then(function(response) {
+    response.json().then(function(data) {
+    alert('Wind speed ' + (data.wind.speed));
+    });
+    });-->
